@@ -78,6 +78,10 @@
     return Number.isFinite(value) && value >= 1 && value <= 1000;
   }
 
+  function parseWeight(value) {
+    return Number(value.trim().replace(/,/g, "."));
+  }
+
   function isValidRecord(record) {
     return record
       && typeof record.date === "string"
@@ -346,7 +350,7 @@
 
   function saveMeasurement(event) {
     event.preventDefault();
-    const weight = Number(elements.weightInput.value);
+    const weight = parseWeight(elements.weightInput.value);
     const date = elements.dateInput.value;
     if (!isValidWeight(weight)) {
       setMessage("Enter a weight between 1 and 1000 kg.", true);
