@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f3">
+    <meta name="description" content="A private, simple dashboard for tracking weight and progress toward your goal.">
+    <title>MetricMe — Your weight, your progress</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="MetricMe home">
+          <span class="brand-mark" aria-hidden="true">M</span>
+          <span>MetricMe</span>
+        </a>
+        <p class="tagline">Your body. Your data. Your progress.</p>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode">
+          <span aria-hidden="true">◐</span>
+          <span id="theme-label">Dark mode</span>
+        </button>
+      </header>
+
+      <main>
+        <section class="welcome-row" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow">YOUR PERSONAL DASHBOARD</p>
+            <h1 id="page-title">A clearer view of your progress.</h1>
+            <p class="intro">Small, consistent check-ins add up. Your data stays on this device.</p>
+          </div>
+          <time class="today-date" id="today-date"></time>
+        </section>
+
+        <section class="metrics-grid" aria-label="Weight overview">
+          <article class="metric-card current-card">
+            <p class="metric-label">Current weight</p>
+            <p class="metric-value" id="current-weight">—</p>
+            <p class="metric-note" id="current-note">Add your first measurement</p>
+          </article>
+          <article class="metric-card">
+            <p class="metric-label">Starting weight</p>
+            <p class="metric-value" id="starting-weight">—</p>
+            <p class="metric-note">Your first recorded entry</p>
+          </article>
+          <article class="metric-card goal-card">
+            <label class="metric-label" for="goal-input">Goal weight</label>
+            <div class="goal-control">
+              <input id="goal-input" type="number" min="1" max="1000" step="0.1" inputmode="decimal" aria-label="Goal weight in kilograms">
+              <span>kg</span>
+              <button id="save-goal" class="text-button" type="button">Save</button>
+            </div>
+            <p class="metric-note">Your personal target</p>
+          </article>
+          <article class="metric-card">
+            <p class="metric-label">Total weight change</p>
+            <p class="metric-value" id="total-change">—</p>
+            <p class="metric-note">Since your first entry</p>
+          </article>
+          <article class="metric-card">
+            <p class="metric-label">Remaining to goal</p>
+            <p class="metric-value" id="remaining-goal">—</p>
+            <p class="metric-note" id="remaining-note">Log a weight to get started</p>
+          </article>
+        </section>
+
+        <div class="content-grid">
+          <section class="panel chart-panel" aria-labelledby="chart-title">
+            <div class="panel-heading chart-heading">
+              <div>
+                <p class="eyebrow">THE BIG PICTURE</p>
+                <h2 id="chart-title">Weight trend</h2>
+              </div>
+              <div class="range-control" role="group" aria-label="Chart date range">
+                <button type="button" data-range="7">7 days</button>
+                <button type="button" data-range="30" class="active" aria-pressed="true">30 days</button>
+                <button type="button" data-range="90" aria-pressed="false">90 days</button>
+                <button type="button" data-range="all" aria-pressed="false">All time</button>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="weight-chart" role="img" aria-label="Line chart showing recorded weight and goal weight over time"></canvas>
+              <p class="chart-empty" id="chart-empty">Your trend will appear here after your first entry.</p>
+            </div>
+            <p class="chart-footnote"><span class="legend-dot"></span> Weight <span class="legend-line"></span> Goal</p>
+          </section>
+
+          <section class="panel entry-panel" aria-labelledby="entry-title">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">A MOMENT FOR YOU</p>
+                <h2 id="entry-title">Log your weight</h2>
+              </div>
+            </div>
+            <p class="section-copy">A single check-in is all it takes.</p>
+            <form id="measurement-form" novalidate>
+              <label for="weight-input">Weight <span class="unit-hint">(kg)</span></label>
+              <div class="input-with-unit">
+                <input id="weight-input" name="weight" type="number" min="1" max="1000" step="0.1" inputmode="decimal" placeholder="e.g. 72.5" required>
+                <span>kg</span>
+              </div>
+              <label for="date-input">Measurement date</label>
+              <input id="date-input" name="date" type="date" required>
+              <div class="form-actions">
+                <button id="save-measurement" class="primary-button" type="submit">Save measurement</button>
+                <button id="cancel-edit" class="secondary-button" type="button" hidden>Cancel</button>
+              </div>
+              <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+            </form>
+            <div class="privacy-note"><span aria-hidden="true">●</span> Your measurements are stored privately in this browser.</div>
+          </section>
+        </div>
+
+        <section class="panel history-panel" aria-labelledby="history-title">
+          <div class="panel-heading history-heading">
+            <div>
+              <p class="eyebrow">YOUR CHECK-INS</p>
+              <h2 id="history-title">Weight history</h2>
+            </div>
+            <button id="export-csv" class="secondary-button export-button" type="button">Export CSV</button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Weight</th>
+                  <th scope="col">Change</th>
+                  <th scope="col"><span class="visually-hidden">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody id="history-body"></tbody>
+            </table>
+            <p class="history-empty" id="history-empty">No measurements yet. Your first entry is a great place to begin.</p>
+          </div>
+        </section>
+
+        <p class="app-notice" id="app-notice" role="status" aria-live="polite"></p>
+      </main>
+
+      <footer class="footer">
+        <span>MetricMe</span>
+        <span>Made for your progress, one day at a time.</span>
+      </footer>
+    </div>
+  </body>
+</html>
