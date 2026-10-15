@@ -180,8 +180,11 @@
       const actionsCell = document.createElement("td");
 
       dateCell.textContent = formatDate(record.date);
+      dateCell.dataset.label = "Date";
       weightCell.textContent = formatWeight(record.weight);
+      weightCell.dataset.label = "Weight";
       changeCell.textContent = change === null ? "—" : formatChange(change);
+      changeCell.dataset.label = "Change";
       if (change !== null && change !== 0) {
         changeCell.classList.add(change < 0 ? "change-positive" : "change-negative");
       }
@@ -462,6 +465,9 @@
         });
         renderChart();
       });
+    });
+    window.addEventListener("orientationchange", () => {
+      if (chart) chart.resize();
     });
     render();
   }

@@ -13,6 +13,7 @@ Open `index.html` in a modern browser. An internet connection is needed to load 
 - Interactive weight history chart with a goal reference line and 7-day, 30-day, 90-day, and all-time filters.
 - Newest-first measurement history with change from the previous measurement.
 - CSV export, browser-local persistence, responsive layout, and a light/dark theme toggle.
+- Mobile-friendly entry controls and compact measurement cards, with responsive chart sizing for phone, tablet, and desktop screens.
 - Input checks for valid weights and dates; no sample or personal measurements are preloaded.
 
 ## Data and privacy
@@ -28,3 +29,5 @@ MetricMe stores your measurements and goal in the browser's `localStorage` on th
 5. Open the published Pages URL. No build command or server-side configuration is needed.
 
 Chart.js is loaded from jsDelivr at runtime. The page itself is static and has no server-side data storage.
+
+The layout was checked at 375px, 390px, 430px, 768px, and 1440px viewport widths.
